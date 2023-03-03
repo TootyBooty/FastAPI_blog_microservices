@@ -1,4 +1,4 @@
-FROM python:3.10 as requirements-stage
+FROM python:3.11 as requirements-stage
 
 WORKDIR /tmp
  
@@ -9,7 +9,7 @@ COPY ./pyproject.toml ./poetry.lock* /tmp/
 RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 
  
-FROM python:3.10
+FROM python:3.11
  
 WORKDIR /blog/app
  
@@ -25,6 +25,8 @@ COPY ./entrypoint.sh /blog/app/entrypoint.sh
 
 RUN chmod +x entrypoint.sh
  
-COPY ./ /blog/app
+
+COPY ./ /blog/app/
+
 
 ENTRYPOINT ["sh", "/blog/app/entrypoint.sh"]
