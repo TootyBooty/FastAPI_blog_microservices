@@ -1,21 +1,65 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, HTTPException, Depends, Body, Query
 
-from depends import get_blog_repository
+from uuid import UUID
+
+from depends import get_blog_repository, get_current_time
 from repositories import BlogRepository
+from schemas import Post, PostIn, PostUpdate
 
 
 blog_router = APIRouter()
 
+
 @blog_router.get('/get_all/')
 async def get_all(
+    limit:int = Query(default=None, ge=1),
     repo:BlogRepository = Depends(get_blog_repository)
     ):
-    return await repo.get_posts()
+    return await repo.get_posts(limit)
 
 
-@blog_router.get('/add/')
-async def add(
+@blog_router.get('/post/', response_model=Post, status_code=200)
+async def get_post(
+    post_id:UUID = Query(),
     repo:BlogRepository = Depends(get_blog_repository)
     ):
-    return await repo.add_post()
+    res = await repo.get_post(post_id)
+    if not res:
+        raise HTTPException(404, 'post not found.')
+    return res
 
+
+@blog_router.post('/post/', response_model=Post, status_code=201)
+async def create_post(
+    post_data:PostIn = Body(),
+    current_time = Depends(get_current_time),
+    repo:BlogRepository = Depends(get_blog_repository)
+    ):
+    return await repo.create_post(post_data, current_time)
+
+
+@blog_router.patch('/post/', response_model=Post, status_code=200)
+async def update_post(
+    post_id:UUID,
+    body:PostUpdate,
+    current_time = Depends(get_current_time),
+    repo:BlogRepository = Depends(get_blog_repository)
+    ):
+    update_data = body.dict(exclude_none=True)
+    if update_data == {}:
+        raise HTTPException(status_code=422, detail='At least one field must be changed.')
+    res = await repo.update_post(post_id, current_time,  update_data)
+    if not res:
+        raise HTTPException(404, 'post not found.')
+    return res
+
+
+@blog_router.delete('/post/', response_model=Post, status_code=200)
+async def delete_post(
+    post_id:UUID,
+    repo:BlogRepository = Depends(get_blog_repository)
+    ):
+    res = await repo.delete_post(post_id)
+    if not res:
+        raise HTTPException(404, 'post not found')
+    return res

@@ -70,6 +70,22 @@ trio = ["trio (>=0.14,<0.23)"]
 wmi = ["wmi (>=1.5.1,<2.0.0)"]
 
 [[package]]
+name = "email-validator"
+version = "1.3.1"
+description = "A robust email address syntax and deliverability validation library."
+category = "main"
+optional = false
+python-versions = ">=3.5"
+files = [
+    {file = "email_validator-1.3.1-py2.py3-none-any.whl", hash = "sha256:49a72f5fa6ed26be1c964f0567d931d10bf3fdeeacdf97bc26ef1cd2a44e0bda"},
+    {file = "email_validator-1.3.1.tar.gz", hash = "sha256:d178c5c6fa6c6824e9b04f199cf23e79ac15756786573c190d2ad13089411ad2"},
+]
+
+[package.dependencies]
+dnspython = ">=1.15.0"
+idna = ">=2.0.0"
+
+[[package]]
 name = "fastapi"
 version = "0.92.0"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
@@ -186,6 +202,7 @@ files = [
 ]
 
 [package.dependencies]
+email-validator = {version = ">=1.0.3", optional = true, markers = "extra == \"email\""}
 typing-extensions = ">=4.2.0"
 
 [package.extras]
@@ -330,6 +347,18 @@ files = [
 ]
 
 [[package]]
+name = "uuid6"
+version = "2022.10.25"
+description = "New time-based UUID formats which are suited for use as a database key"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "uuid6-2022.10.25-py3-none-any.whl", hash = "sha256:bd9b874081968c5f24af7ec7a3f48175197806224cc6f4833914f671854c6266"},
+    {file = "uuid6-2022.10.25.tar.gz", hash = "sha256:0a56935de9c1ce8dd8559225b845549d94917d9e24ad4b1cc2328eea5be0010c"},
+]
+
+[[package]]
 name = "uvicorn"
 version = "0.20.0"
 description = "The lightning-fast ASGI server."
@@ -351,4 +380,4 @@ standard = ["colorama (>=0.4)", "httptools (>=0.5.0)", "python-dotenv (>=0.13)",
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "c329b100ebd47b68e556a7f1c449344e5a32416d1a761464841a21122a219529"
+content-hash = "c8a7b2ad3014e135f2bd9eb5638b9ea41172cdddc4b3bcd20ca52c82958186fe"
