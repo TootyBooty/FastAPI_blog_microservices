@@ -6,23 +6,25 @@ import datetime
 
 
 class CommentIn(BaseModel):
-    post_id: UUID
+    creator: EmailStr
     content: constr(min_length=1, max_length=1000)
 
 class Comment(CommentIn):
     comment_id: UUID
-    creator: EmailStr
     created_at: datetime.datetime
-    updated_at: datetime.datetime
-
+ 
 
 class PostIn(BaseModel):
     creator: EmailStr
     title: constr(min_length=1, max_length=50)
     content: constr(min_length=1, max_length=5000)
 
-class Post(PostIn):
+    
+class PostOut(PostIn):
     post_id: UUID
+
+
+class Post(PostOut):
     comments: list[Comment] = []
     created_at: datetime.datetime
     updated_at: datetime.datetime
