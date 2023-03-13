@@ -71,3 +71,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# mongodb
+mongo-data

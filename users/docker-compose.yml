@@ -1,0 +1,34 @@
+version: "3.8"
+services:
+
+  # application
+  users_microservice:
+    image: users_microservice
+    container_name: "users_app"
+    restart: on-failure
+    build: ./app
+    # env_file:
+    #   - app/.env
+    ports:
+      - "8001:8000"
+    # depends_on:
+    #   - mongo_db
+    networks:
+      - custom
+
+
+  # database
+#   mongo_db:
+#       image: mongo
+#       container_name: "blog_mongo_db"
+#       restart: on-failure
+#       ports:
+#         - "27017:27017"
+#       volumes:
+#         - ./mongo-data:/data/db
+#       networks:
+#         - custom
+
+networks:
+  custom:
+    driver: bridge
