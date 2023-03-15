@@ -9,6 +9,12 @@ readme = "README.md"
 python = "^3.11"
 fastapi = "^0.94.0"
 uvicorn = "^0.21.0"
+sqlmodel = "^0.0.8"
+asyncpg = "^0.27.0"
+uuid6 = "^2022.10.25"
+pydantic = {extras = ["email"], version = "^1.10.6"}
+alembic = "^1.10.2"
+greenlet = "^2.0.2"
 
 
 [build-system]

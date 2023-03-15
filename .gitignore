@@ -74,3 +74,6 @@ dmypy.json
 
 # mongodb
 mongo-data
+
+# postgresql
+postgres-data
