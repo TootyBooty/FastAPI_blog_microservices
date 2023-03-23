@@ -15,6 +15,7 @@ uuid6 = "^2022.10.25"
 pydantic = {extras = ["email"], version = "^1.10.6"}
 alembic = "^1.10.2"
 greenlet = "^2.0.2"
+passlib = "^1.7.4"
 
 
 [build-system]

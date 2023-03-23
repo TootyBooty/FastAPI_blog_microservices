@@ -5,7 +5,7 @@ from sqlmodel import SQLModel
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from config import POSTGRES_URL
+from core.config import POSTGRES_URL
 
 engine = create_async_engine(
     POSTGRES_URL,

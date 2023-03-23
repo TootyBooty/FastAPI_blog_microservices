@@ -17,8 +17,3 @@ class User(SQLModel, table=True):
     # TODO
     # roles 
 
-class UserCreate(SQLModel):
-    name: str = Field(max_length=15)
-    surname: str = Field(max_length=15)
-    email: EmailStr = Field(unique=True)
-    password: str
