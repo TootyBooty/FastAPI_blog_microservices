@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Body, Depends
+from fastapi import APIRouter, Body, Depends, Query
 from sqlalchemy.exc import IntegrityError
 
 from uuid6 import UUID
@@ -15,7 +15,7 @@ user_router = APIRouter()
 
 @user_router.get('/', response_model=UserShow)
 async def get_user_by_id(
-    user_id:UUID,
+    user_id:UUID = Query(),
     repo:UserRepository = Depends(get_user_repository)
     ):
     user = await repo.get_user_by_id(user_id)
