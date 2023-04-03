@@ -1,0 +1,40 @@
+version: "3.8"
+services:
+
+  # application
+  web:
+    image: users_microservice
+    container_name: "users_web"
+    restart: on-failure
+    build: ./app
+    env_file:
+      - .env
+    ports:
+      - "8001:8000"
+    networks:
+      blog:
+        ipv4_address: 172.20.0.2
+
+
+  # database
+  postgresql:
+    container_name: "users_db"
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=users
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+
+
+networks:
+  blog:
+    external: true
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 172.20.0.0/16

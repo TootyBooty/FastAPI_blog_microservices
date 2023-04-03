@@ -1,11 +1,12 @@
-from fastapi import APIRouter, HTTPException, Body, Depends
+from fastapi import APIRouter, Body, Depends
 from sqlalchemy.exc import IntegrityError
 
 from uuid6 import UUID
 
 from db.repositories import UserRepository
-from ..depends import get_user_repository
-from ..schemas import UserCreate, UserUpdate, UserOut, UserShow
+from api.depends import get_user_repository
+from api.schemas import UserCreate, UserUpdate, UserOut, UserShow
+import exceptions as exc
 
 
 user_router = APIRouter()
@@ -19,7 +20,7 @@ async def get_user_by_id(
     ):
     user = await repo.get_user_by_id(user_id)
     if user is None:
-        raise HTTPException(status_code=404, detail=f"User with id {user_id} not found.")
+        raise exc.InvalidUserId
     return user
 
 
@@ -30,8 +31,8 @@ async def create_user(
     ):
     try:
         return  await repo.create_user(user_data)
-    except IntegrityError as err:
-        raise HTTPException(status_code=503, detail="A data integrity error occurred")
+    except IntegrityError:
+        raise exc.EmailAlreadyTaken
 
 
 @user_router.patch('/', response_model=UserOut)
@@ -42,15 +43,15 @@ async def update_user_by_id(
    ):
     update_data = body.dict(exclude_none=True)
     if update_data == {}:
-        raise HTTPException(status_code=422, detail='At least one field must be changed.')
+        raise exc.EmptyUpdatedData
     
     try:
         updated_user_id =  await repo.update_user(user_id, update_data)
     except IntegrityError as err:
-        raise HTTPException(status_code=503, detail="A data integrity error occurred")
+        raise exc.EmailAlreadyTaken
     
     if updated_user_id is None:
-        raise HTTPException(status_code=404, detail=f"User with id {user_id} not found.")
+        raise exc.InvalidUserId
     return UserOut(user_id=updated_user_id)
 
 
@@ -61,7 +62,7 @@ async def delete_user(
     ):
     deleted_user_id =  await repo.delete_user(user_id)
     if deleted_user_id is None:
-        raise HTTPException(status_code=404, detail=f"User with id {user_id} not found.")
+        raise exc.InvalidUserId
     return UserOut(user_id=deleted_user_id)
 
 
@@ -74,4 +75,6 @@ from sqlmodel import select
 async def get_users(session = Depends(get_session)):
     result = await session.execute(select(User))
     users = result.scalars().all()
-    return [UserShow(user_id=user.user_id, name=user.name, surname=user.surname, email=user.email, is_active=user.is_active) for user in users]
+    return [UserShow(
+        user_id=user.user_id, name=user.name, surname=user.surname, email=user.email, is_active=user.is_active, roles=user.roles)
+          for user in users]

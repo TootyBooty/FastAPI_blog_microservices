@@ -5,3 +5,5 @@ from db.repositories import UserRepository
 
 async def get_user_repository(session = Depends(get_session)) -> UserRepository:
     return UserRepository(session)
+
+

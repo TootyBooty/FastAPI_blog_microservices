@@ -5,10 +5,11 @@ from sqlmodel import SQLModel
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from core.config import POSTGRES_URL
+from core.config import Config
+
 
 engine = create_async_engine(
-    POSTGRES_URL,
+    Config.postgres_url,
     future=True,
     echo=True,
     execution_options={"isolation_level": "AUTOCOMMIT"},

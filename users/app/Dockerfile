@@ -12,6 +12,9 @@ RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 FROM python:3.11
  
 WORKDIR /users/app
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONBUFFERED 1
  
 COPY --from=requirements-stage /tmp/requirements.txt /users/requirements.txt
  

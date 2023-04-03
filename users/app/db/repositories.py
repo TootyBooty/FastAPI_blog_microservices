@@ -4,9 +4,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from uuid6 import uuid6, UUID
 from typing import Union
 
-from .models import User
-from api.schemas import UserCreate, UserShow
+from core.config import Config
 from core.security import get_password_hash
+from db.models import User, UserRole
+from api.schemas import UserCreate, UserShow, UserOutForLogin
 
 
 class BaseRepository:
@@ -22,7 +23,7 @@ class UserRepository(BaseRepository):
                 name=user.name,
                 surname=user.surname,
                 email=user.email,
-                password=get_password_hash(user.password)
+                password=get_password_hash(user.password),
             )
             self.session.add(new_user)
 
@@ -32,6 +33,7 @@ class UserRepository(BaseRepository):
                 surname=new_user.surname,
                 email=new_user.email,
                 is_active=new_user.is_active,
+                roles=new_user.roles
             )
 
 
@@ -51,7 +53,7 @@ class UserRepository(BaseRepository):
             user_row = res.fetchone()
             if user_row is not None:
                 return user_row[0]
-        
+
     
     async def update_user(self, user_id: UUID, update_data) -> Union[UUID, None]:
         async with self.session.begin():
@@ -80,3 +82,18 @@ class UserRepository(BaseRepository):
             deleted_user_id_row = res.fetchone()
             if deleted_user_id_row is not None:
                 return deleted_user_id_row[0]
+            
+
+    async def create_superadmin(self):
+        superadmin = await self.get_user_by_email(Config.superadmin_email)
+        if not superadmin:
+            superadmin_data = UserCreate(
+            name = Config.superadmin_name,
+            surname = Config.superadmin_surname,
+            email = Config.superadmin_email,
+            password = Config.superadmin_password
+            )
+            new_user = await self.create_user(superadmin_data)
+            user = await self.get_user_by_id(new_user.user_id)
+            updated_roles = {'roles': user.add_role_from_model(UserRole.ROLE_SUPERADMIN)}
+            await self.update_user(user_id=new_user.user_id, update_data=updated_roles)

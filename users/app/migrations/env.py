@@ -8,7 +8,7 @@ from sqlmodel import SQLModel
 
 from alembic import context
 
-from config import POSTGRES_URL
+from core.config import Config
 from db import models
 
 # this is the Alembic Config object, which provides
@@ -19,7 +19,7 @@ config = context.config
 # This line sets up loggers basically.
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
-config.set_main_option('sqlalchemy.url', POSTGRES_URL)
+config.set_main_option('sqlalchemy.url', Config.postgres_url)
 
 # add your model's MetaData object here
 # for 'autogenerate' support
@@ -51,6 +51,7 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        compare_type=True,
     )
 
     with context.begin_transaction():

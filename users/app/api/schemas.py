@@ -6,6 +6,7 @@ import re
 from typing import Optional
 from uuid6 import UUID
 
+from db.models import UserRole
 
 LETTER_MATCH_PATTERN = re.compile(r"^[а-яА-Яa-zA-Z\-]+$")
 
@@ -66,7 +67,18 @@ class UserShow(CustomModel):
     surname: str
     email: EmailStr
     is_active: bool
+    roles: set[UserRole]
 
 
 class UserOut(CustomModel):
     user_id: UUID
+
+
+class UserOutForLogin(CustomModel):
+    email: EmailStr
+    roles: set[UserRole]
+
+
+class UserInForLogin(CustomModel):
+    email: EmailStr
+    password: str
