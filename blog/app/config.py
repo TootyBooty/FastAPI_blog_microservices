@@ -1,5 +1,12 @@
-from starlette.config import Config
+from pydantic import BaseSettings, EmailStr
 
-config = Config('.env')
 
-MONGODB_URL = config('MONGODB_URL', cast=str, default='mongodb://localhost:27017')
+class Settings(BaseSettings):
+    API_GATEWAY_TOKEN: str
+    MONGODB_URL: str = "mongodb://localhost:27017"
+    TOKEN_URL: str = "/auth/login"
+
+    class Config:
+        env_file = '.env'
+
+Config = Settings()

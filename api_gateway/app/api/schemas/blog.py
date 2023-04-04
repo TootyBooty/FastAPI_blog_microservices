@@ -5,12 +5,7 @@ from uuid import UUID
 import datetime
 
 
-class CustomModel(BaseModel):
-    class Config:
-        orm_mode = True
-
-
-class CommentIn(CustomModel):
+class CommentIn(BaseModel):
     creator: EmailStr
     content: constr(min_length=1, max_length=1000)
 
@@ -19,7 +14,7 @@ class Comment(CommentIn):
     created_at: datetime.datetime
  
 
-class PostIn(CustomModel):
+class PostIn(BaseModel):
     creator: EmailStr
     title: constr(min_length=1, max_length=50)
     content: constr(min_length=1, max_length=5000)
@@ -34,6 +29,6 @@ class Post(PostOut):
     created_at: datetime.datetime
     updated_at: datetime.datetime
 
-class PostUpdate(CustomModel):
+class PostUpdate(BaseModel):
     title: Optional[constr(min_length=1, max_length=50)]
     content: Optional[constr(min_length=1, max_length=5000)]

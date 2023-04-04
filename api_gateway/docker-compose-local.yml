@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+
+  # application
+  web:
+    image: api_gateway
+    container_name: "api_gateway"
+    restart: on-failure
+    build: ./app
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    networks:
+      - custom
+
+networks:
+  custom:
+    driver: bridge
