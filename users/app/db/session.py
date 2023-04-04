@@ -9,7 +9,7 @@ from core.config import Config
 
 
 engine = create_async_engine(
-    Config.postgres_url,
+    Config.POSTGRES_URL,
     future=True,
     echo=True,
     execution_options={"isolation_level": "AUTOCOMMIT"},

@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from uuid6 import UUID
 
 from db.repositories import UserRepository
-from api.depends import get_user_repository
+from api.depends import get_user_repository, get_authorized_user
 from api.schemas import UserCreate, UserUpdate, UserOut, UserShow
 import exceptions as exc
 
@@ -78,3 +78,8 @@ async def get_users(session = Depends(get_session)):
     return [UserShow(
         user_id=user.user_id, name=user.name, surname=user.surname, email=user.email, is_active=user.is_active, roles=user.roles)
           for user in users]
+
+
+@user_router.get('/test_user')
+async def test_user(user = Depends(get_authorized_user)):
+    return user

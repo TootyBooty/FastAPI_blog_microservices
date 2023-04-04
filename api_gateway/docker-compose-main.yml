@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+
+  # application
+  web:
+    image: api_gateway
+    container_name: "api_gateway"
+    restart: on-failure
+    build: ./app    
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    networks:
+      blog:
+        ipv4_address: 172.20.0.10
+        
+
+networks:
+  blog:
+    external: true
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 172.20.0.0/16

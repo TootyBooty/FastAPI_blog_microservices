@@ -14,7 +14,8 @@ services:
     depends_on:
       - mongo_db
     networks:
-      - custom
+      blog:
+        ipv4_address: 172.20.0.3
 
 
   # database
@@ -27,8 +28,14 @@ services:
       volumes:
         - ./mongo-data:/data/db
       networks:
-        - custom
+        blog:
+          ipv4_address: 172.20.0.13
+
 
 networks:
-  custom:
+  blog:
+    external: true
     driver: bridge
+    ipam:
+     config:
+       - subnet: 172.20.0.0/16

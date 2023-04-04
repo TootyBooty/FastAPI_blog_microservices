@@ -1,5 +1,7 @@
 from fastapi import FastAPI, APIRouter, Depends
 
+from api.depends import verify_token
+
 from api.routes.user import user_router
 from api.routes.auth import auth_router
 
@@ -7,7 +9,7 @@ from db.repositories import UserRepository
 from db.session import async_session
 
 
-app = FastAPI()
+app = FastAPI(dependencies=[Depends(verify_token)])
 
 
 @app.on_event('startup')
