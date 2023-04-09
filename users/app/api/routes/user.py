@@ -1,15 +1,26 @@
 from fastapi import APIRouter, Body, Depends, Query
 from sqlalchemy.exc import IntegrityError
 
+from pydantic import EmailStr
 from uuid6 import UUID
 
 from db.repositories import UserRepository
-from api.depends import get_user_repository, get_authorized_user
+from api.depends import get_user_repository
 from api.schemas import UserCreate, UserUpdate, UserOut, UserShow
 import exceptions as exc
 
 
 user_router = APIRouter()
+
+
+@user_router.get("/all", response_model=list[UserShow])
+async def get_all_users(
+    repo: UserRepository = Depends(get_user_repository),
+    limit: int = Query(ge=1, default=50),
+    offset: int = Query(ge=0, default=0),
+    ):
+    users = await repo.get_all_users(offset=offset, limit=limit)
+    return [UserShow(**user.dict()) for user in users]
 
 
 
@@ -24,7 +35,18 @@ async def get_user_by_id(
     return user
 
 
-@user_router.post('/', response_model=UserOut)
+@user_router.get('/profile', response_model=UserShow)
+async def get_user_by_email(
+    email:EmailStr = Query(),
+    repo:UserRepository = Depends(get_user_repository)
+    ):
+    user = await repo.get_user_by_email(email)
+    if user is None:
+        raise exc.InvalidUserId
+    return user
+
+
+@user_router.post('/', response_model=UserShow)
 async def create_user(
     user_data:UserCreate = Body(),
     repo:UserRepository = Depends(get_user_repository)
@@ -64,22 +86,3 @@ async def delete_user(
     if deleted_user_id is None:
         raise exc.InvalidUserId
     return UserOut(user_id=deleted_user_id)
-
-
-# added during testing
-from db.models import User
-from db.session import get_session
-from sqlmodel import select
-
-@user_router.get("/all", response_model=list[UserShow])
-async def get_users(session = Depends(get_session)):
-    result = await session.execute(select(User))
-    users = result.scalars().all()
-    return [UserShow(
-        user_id=user.user_id, name=user.name, surname=user.surname, email=user.email, is_active=user.is_active, roles=user.roles)
-          for user in users]
-
-
-@user_router.get('/test_user')
-async def test_user(user = Depends(get_authorized_user)):
-    return user

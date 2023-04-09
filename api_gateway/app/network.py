@@ -15,10 +15,9 @@ async def make_request(
     authorized_user: dict = None
 ):
     headers['api-gateway-token'] = Config.API_GATEWAY_TOKEN
+    
     if authorized_user:
         data['authorized_user'] = authorized_user
-        # data['authorized_user_email'] = authorized_user.get('email')
-        # data['authorized_user_roles'] = authorized_user.get('roles')
 
     with async_timeout.timeout(Config.GATEWAY_TIMEOUT):
         async with session:
@@ -26,5 +25,5 @@ async def make_request(
             async with request(url, json=data, params=params, headers=headers) as response:
                 data = await response.json()
                 if response.status > 299:
-                    raise HTTPException(status_code=response.status, detail=response)
+                    raise HTTPException(status_code=response.status, detail=data)
                 return data

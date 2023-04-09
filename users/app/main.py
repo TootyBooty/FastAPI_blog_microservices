@@ -22,7 +22,7 @@ async def create_superadmin():
 main_api_router = APIRouter()
 
 main_api_router.include_router(user_router, prefix='/user')
-main_api_router.include_router(auth_router, prefix='/auth')
+main_api_router.include_router(auth_router, prefix='/login')
 
 @main_api_router.get('/')
 async def ping():
