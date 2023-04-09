@@ -4,6 +4,12 @@ from aiohttp import ClientSession
 from jose import jwt, JWTError
 
 from core.config import Config
+from network import make_request
+from api.urls import user_base_url, user_profile_url
+from api.schemas.user import UserShow, UserOutForLogin
+
+from pydantic import EmailStr
+from uuid import UUID
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login/token")
 
@@ -32,4 +38,20 @@ async def get_user_data_from_token(token: str = Depends(oauth2_scheme)):
             raise credentials_exception
     except JWTError:
         raise credentials_exception
-    return {'email': email, 'roles': roles}
+    return UserOutForLogin(email=email, roles=roles)
+
+
+async def get_target_user_by_id(
+    user_id:UUID,
+    ) -> UserShow:
+        session = ClientSession()
+        user = await make_request(session=session, url=user_base_url, method='get', params={'user_id': user_id.hex})
+        return UserShow(**user)
+
+
+async def get_target_user_by_email(
+    author:EmailStr,
+    ) -> UserShow:
+        session = ClientSession()
+        user = await make_request(session=session, url=user_profile_url, method='get', params={'email': author})
+        return UserShow(**user)

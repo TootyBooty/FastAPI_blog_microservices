@@ -7,7 +7,7 @@ from typing import Union
 from core.config import Config
 from core.security import get_password_hash
 from db.models import User, UserRole
-from api.schemas import UserCreate, UserShow, UserOutForLogin
+from api.schemas import UserCreate, UserShow
 
 
 class BaseRepository:
@@ -16,6 +16,15 @@ class BaseRepository:
 
 
 class UserRepository(BaseRepository):
+    
+    async def get_all_users(self, offset, limit):
+        async with self.session.begin():
+            query = select(User).offset(offset).limit(limit)
+            res = await self.session.execute(query)
+            users = res.scalars().all()
+            return users
+
+
     async def create_user(self, user:UserCreate) -> UserShow:
         async with self.session.begin():
             new_user = User(
@@ -26,7 +35,6 @@ class UserRepository(BaseRepository):
                 password=get_password_hash(user.password),
             )
             self.session.add(new_user)
-
             return UserShow(
                 user_id=new_user.user_id,
                 name=new_user.name,
@@ -78,7 +86,6 @@ class UserRepository(BaseRepository):
                 .returning(User.user_id)
             )
             res = await self.session.execute(query)
-
             deleted_user_id_row = res.fetchone()
             if deleted_user_id_row is not None:
                 return deleted_user_id_row[0]

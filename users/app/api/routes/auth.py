@@ -9,7 +9,7 @@ from exceptions import CredentialsException
 auth_router = APIRouter()
 
 
-@auth_router.post('/login', response_model=UserOutForLogin)
+@auth_router.post('/token', response_model=UserOutForLogin)
 async def login_for_token(
     login_data: UserInForLogin,
     repo:UserRepository = Depends(get_user_repository)

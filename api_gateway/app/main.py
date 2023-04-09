@@ -8,7 +8,7 @@ app = FastAPI()
 
 main_api_router = APIRouter()
 
-main_api_router.include_router(auth_router, prefix='/auth', tags=['user'])
+main_api_router.include_router(auth_router, prefix='/login', tags=['auth'])
 main_api_router.include_router(user_router, prefix='/user', tags=['user'])
 main_api_router.include_router(blog_router, prefix='/blog', tags=['blog'])
 

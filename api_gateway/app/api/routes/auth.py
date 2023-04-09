@@ -15,7 +15,7 @@ from core.security import create_access_token
 auth_router = APIRouter()
 
 
-@auth_router.post('/login')
+@auth_router.post('/token')
 async def login(
     form_data:OAuth2PasswordRequestForm = Depends(),
     session = Depends(get_aiohttp_session)

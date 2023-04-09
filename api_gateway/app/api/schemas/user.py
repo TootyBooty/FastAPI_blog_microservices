@@ -1,7 +1,15 @@
 from pydantic import BaseModel, Field, EmailStr, constr
 
+import enum
 from typing import Optional
 from uuid import UUID
+
+
+class UserRole(str, enum.Enum):
+    ROLE_USER = "USER"
+    ROLE_MODERATOR = "MODERATOR"
+    ROLE_ADMIN = "ADMIN"
+    ROLE_SUPERADMIN = "SUPERADMIN"
 
 
 class CustomModel(BaseModel):
@@ -28,7 +36,7 @@ class UserShow(CustomModel):
     surname: str
     email: EmailStr
     is_active: bool
-    roles: list
+    roles: list[UserRole]
 
 
 class UserOut(CustomModel):
@@ -37,4 +45,4 @@ class UserOut(CustomModel):
 
 class UserOutForLogin(CustomModel):
     email: EmailStr
-    roles: list
+    roles: list[UserRole]
