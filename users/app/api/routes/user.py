@@ -6,7 +6,7 @@ from uuid6 import UUID
 
 from db.repositories import UserRepository
 from api.depends import get_user_repository
-from api.schemas import UserCreate, UserUpdate, UserOut, UserShow
+from api.schemas import UserCreate, UserUpdate, UserOut, UserShow, UserUpdateRole
 import exceptions as exc
 
 
@@ -59,8 +59,8 @@ async def create_user(
 
 @user_router.patch('/', response_model=UserOut)
 async def update_user_by_id(
-    user_id:UUID,
     body:UserUpdate,
+    user_id:UUID = Query(),
     repo:UserRepository = Depends(get_user_repository)
    ):
     update_data = body.dict(exclude_none=True)
@@ -79,10 +79,41 @@ async def update_user_by_id(
 
 @user_router.delete('/', response_model=UserOut)
 async def delete_user(
-    user_id:UUID,
+    user_id:UUID = Query(),
     repo:UserRepository = Depends(get_user_repository)
     ):
     deleted_user_id =  await repo.delete_user(user_id)
     if deleted_user_id is None:
         raise exc.InvalidUserId
     return UserOut(user_id=deleted_user_id)
+
+from db.models import UserRole
+
+@user_router.post('/role')
+async def add_role(
+    role:UserUpdateRole,
+    user_id:UUID = Query(),
+    repo:UserRepository = Depends(get_user_repository)
+    ):
+    user = await repo.get_user_by_id(user_id)
+    if user is None:
+        raise exc.InvalidUserId
+    updated_roles = user.add_role_from_model(role_for_add=role.role.value)
+    if updated_roles:
+        await repo.update_user(user_id=user_id, update_data={'roles': updated_roles})
+    return UserOut(user_id=user_id)
+
+
+@user_router.delete('/role')
+async def delete_role(
+    role:UserUpdateRole,
+    user_id:UUID = Query(),
+    repo:UserRepository = Depends(get_user_repository)
+    ):
+    user = await repo.get_user_by_id(user_id)
+    if user is None:
+        raise exc.InvalidUserId
+    updated_roles = user.remove_role_from_model(role_for_delete=role.role.value)
+    if updated_roles:
+        await repo.update_user(user_id=user_id, update_data={'roles': updated_roles})
+    return UserOut(user_id=user_id)

@@ -59,6 +59,10 @@ class UserUpdate(CustomModel):
                 status_code=422, detail="Surname should contains only letters"
             )
         return value
+    
+    
+class UserUpdateRole(CustomModel):
+    role: UserRole.get_roles_for_update()
 
 
 class UserShow(CustomModel):
