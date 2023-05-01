@@ -6,7 +6,7 @@ services:
     image: api_gateway
     container_name: "api_gateway"
     restart: on-failure
-    build: ./app    
+    build: ./app
     env_file:
       - .env
     ports:
@@ -14,7 +14,7 @@ services:
     networks:
       blog:
         ipv4_address: 172.20.0.10
-        
+
 
 networks:
   blog:

@@ -1,12 +1,14 @@
-from fastapi import HTTPException
-from pydantic import (BaseModel, Field, EmailStr,
-                       constr, validator)
-
 import re
 from typing import Optional
-from uuid6 import UUID
 
 from db.models import UserRole
+from fastapi import HTTPException
+from pydantic import BaseModel
+from pydantic import constr
+from pydantic import EmailStr
+from pydantic import Field
+from pydantic import validator
+from uuid6 import UUID
 
 LETTER_MATCH_PATTERN = re.compile(r"^[а-яА-Яa-zA-Z\-]+$")
 
@@ -59,8 +61,8 @@ class UserUpdate(CustomModel):
                 status_code=422, detail="Surname should contains only letters"
             )
         return value
-    
-    
+
+
 class UserUpdateRole(CustomModel):
     role: UserRole.get_roles_for_update()
 

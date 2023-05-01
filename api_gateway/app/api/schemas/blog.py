@@ -1,28 +1,32 @@
-from pydantic import BaseModel, EmailStr, constr
-
+import datetime
 from typing import Optional
 from uuid import UUID
-import datetime
+
+from pydantic import BaseModel
+from pydantic import constr
+from pydantic import EmailStr
 
 
 class CommentIn(BaseModel):
     content: constr(min_length=1, max_length=1000)
 
+
 class Comment(CommentIn):
     author: EmailStr
     comment_id: UUID
     created_at: datetime.datetime
-    
+
+
 class CommentOut(BaseModel):
     post_id: UUID
     comment_id: UUID
- 
+
 
 class PostIn(BaseModel):
     title: constr(min_length=1, max_length=50)
     content: constr(min_length=1, max_length=5000)
 
-    
+
 class PostOut(BaseModel):
     post_id: UUID
 
