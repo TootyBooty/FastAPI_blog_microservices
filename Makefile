@@ -14,4 +14,3 @@ reload-main:
 	docker compose -f users/docker-compose-main.yml up --build --detach -d && \
 	docker compose -f blog/docker-compose-main.yml up --build --detach -d && \
 	docker compose -f api_gateway/docker-compose-main.yml up --build --detach
-	

@@ -1,4 +1,4 @@
-from pydantic import BaseSettings, EmailStr
+from pydantic import BaseSettings
 
 
 class Settings(BaseSettings):
@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     TOKEN_URL: str = "/auth/login"
 
     class Config:
-        env_file = '.env'
+        env_file = ".env"
+
 
 Config = Settings()
