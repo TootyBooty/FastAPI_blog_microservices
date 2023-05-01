@@ -13,6 +13,12 @@ class UserRole(str, enum.Enum):
     ROLE_ADMIN = "ADMIN"
     ROLE_SUPERADMIN = "SUPERADMIN"
 
+    @classmethod
+    def get_roles_for_update(cls) -> enum.Enum:
+        return enum.Enum(value="UserRoleForUpdate", 
+                    names={key:cls.__members__[key].value 
+                        for key in cls.__members__ if key not in [cls.ROLE_USER.name, cls.ROLE_SUPERADMIN.name]})
+
 
 class User(SQLModel, table=True):
     __tablename__ = 'users'
@@ -35,9 +41,9 @@ class User(SQLModel, table=True):
         return UserRole.ROLE_MODERATOR in self.roles
     
     def add_role_from_model(self, role_for_add:UserRole):
-        if not role_for_add is self.roles:
+        if not role_for_add in self.roles:
             return list({*self.roles, role_for_add})
         
     def remove_role_from_model(self, role_for_delete:UserRole):
         if role_for_delete in self.roles:
-            return {role for role in self.roles if role != role_for_delete}
+            return list({role for role in self.roles if role != role_for_delete})

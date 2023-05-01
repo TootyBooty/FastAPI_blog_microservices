@@ -11,6 +11,12 @@ class UserRole(str, enum.Enum):
     ROLE_ADMIN = "ADMIN"
     ROLE_SUPERADMIN = "SUPERADMIN"
 
+    @classmethod
+    def get_roles_for_update(cls) -> enum.Enum:
+        return enum.Enum(value="UserRoleForUpdate", 
+                    names={key:cls.__members__[key].value 
+                        for key in cls.__members__ if key not in [cls.ROLE_USER.name, cls.ROLE_SUPERADMIN.name]})
+
 
 class CustomModel(BaseModel):
     class Config:
@@ -28,6 +34,10 @@ class UserUpdate(CustomModel):
     name: Optional[constr(min_length=1)]
     surname: Optional[constr(min_length=1)]
     email: Optional[EmailStr]
+
+
+class UserUpdateRole(CustomModel):
+    role: UserRole.get_roles_for_update()
 
 
 class UserShow(CustomModel):
