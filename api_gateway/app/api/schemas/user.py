@@ -1,8 +1,11 @@
-from pydantic import BaseModel, Field, EmailStr, constr
-
 import enum
 from typing import Optional
 from uuid import UUID
+
+from pydantic import BaseModel
+from pydantic import constr
+from pydantic import EmailStr
+from pydantic import Field
 
 
 class UserRole(str, enum.Enum):
@@ -13,9 +16,14 @@ class UserRole(str, enum.Enum):
 
     @classmethod
     def get_roles_for_update(cls) -> enum.Enum:
-        return enum.Enum(value="UserRoleForUpdate", 
-                    names={key:cls.__members__[key].value 
-                        for key in cls.__members__ if key not in [cls.ROLE_USER.name, cls.ROLE_SUPERADMIN.name]})
+        return enum.Enum(
+            value="UserRoleForUpdate",
+            names={
+                key: cls.__members__[key].value
+                for key in cls.__members__
+                if key not in [cls.ROLE_USER.name, cls.ROLE_SUPERADMIN.name]
+            },
+        )
 
 
 class CustomModel(BaseModel):

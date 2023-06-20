@@ -1,8 +1,10 @@
-from pydantic import BaseModel, EmailStr, constr
-
+import datetime
 from typing import Optional
 from uuid import UUID
-import datetime
+
+from pydantic import BaseModel
+from pydantic import constr
+from pydantic import EmailStr
 
 
 class CustomModel(BaseModel):
@@ -13,11 +15,13 @@ class CustomModel(BaseModel):
 class CommentIn(CustomModel):
     content: constr(min_length=1, max_length=1000)
 
+
 class Comment(CommentIn):
     author: EmailStr
     comment_id: UUID
     created_at: datetime.datetime
- 
+
+
 class CommentOut(CustomModel):
     post_id: UUID
     comment_id: UUID

@@ -1,15 +1,18 @@
-from fastapi import Depends, HTTPException
-from fastapi.security import OAuth2PasswordBearer
-from aiohttp import ClientSession
-from jose import jwt, JWTError
-
-from core.config import Config
-from network import make_request
-from api.urls import user_base_url, user_profile_url
-from api.schemas.user import UserShow, UserOutForLogin
-
-from pydantic import EmailStr
 from uuid import UUID
+
+from aiohttp import ClientSession
+from api.schemas.user import UserOutForLogin
+from api.schemas.user import UserShow
+from api.urls import user_base_url
+from api.urls import user_profile_url
+from core.config import Config
+from fastapi import Depends
+from fastapi import HTTPException
+from fastapi.security import OAuth2PasswordBearer
+from jose import jwt
+from jose import JWTError
+from network import make_request
+from pydantic import EmailStr
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login/token")
 
@@ -29,11 +32,9 @@ async def get_user_data_from_token(token: str = Depends(oauth2_scheme)):
         detail="Could not validate credentials",
     )
     try:
-        payload = jwt.decode(
-            token, Config.SECRET_KEY, algorithms=[Config.ALGORITHM]
-        )
+        payload = jwt.decode(token, Config.SECRET_KEY, algorithms=[Config.ALGORITHM])
         email: str = payload.get("sub")
-        roles: list = payload.get('roles')
+        roles: list = payload.get("roles")
         if email is None:
             raise credentials_exception
     except JWTError:
@@ -42,16 +43,23 @@ async def get_user_data_from_token(token: str = Depends(oauth2_scheme)):
 
 
 async def get_target_user_by_id(
-    user_id:UUID,
-    ) -> UserShow:
-        session = ClientSession()
-        user = await make_request(session=session, url=user_base_url, method='get', params={'user_id': user_id.hex})
-        return UserShow(**user)
+    user_id: UUID,
+) -> UserShow:
+    session = ClientSession()
+    user = await make_request(
+        session=session,
+        url=user_base_url,
+        method="get",
+        params={"user_id": user_id.hex},
+    )
+    return UserShow(**user)
 
 
 async def get_target_user_by_email(
-    author:EmailStr,
-    ) -> UserShow:
-        session = ClientSession()
-        user = await make_request(session=session, url=user_profile_url, method='get', params={'email': author})
-        return UserShow(**user)
+    author: EmailStr,
+) -> UserShow:
+    session = ClientSession()
+    user = await make_request(
+        session=session, url=user_profile_url, method="get", params={"email": author}
+    )
+    return UserShow(**user)

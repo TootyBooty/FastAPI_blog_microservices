@@ -14,4 +14,3 @@ reload-prod:
 	docker compose -f users/docker-compose-prod.yml up --build --detach -d && \
 	docker compose -f blog/docker-compose-prod.yml up --build --detach -d && \
 	docker compose -f api_gateway/docker-compose-prod.yml up --build --detach
-	
