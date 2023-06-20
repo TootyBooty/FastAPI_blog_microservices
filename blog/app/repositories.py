@@ -4,7 +4,7 @@ from pymongo import ReturnDocument
 
 from typing import Union
 
-from schemas import *
+from api.schemas import *
 
 
 class BaseRepository:

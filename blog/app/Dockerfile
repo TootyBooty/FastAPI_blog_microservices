@@ -19,7 +19,7 @@ RUN pip install --no-cache-dir --upgrade -r /blog/requirements.txt
 
 RUN apt-get update && apt-get -y dist-upgrade
 
-RUN apt install -y netcat
+RUN apt install -y netcat-traditional
 
 COPY ./entrypoint.sh /blog/app/entrypoint.sh
 

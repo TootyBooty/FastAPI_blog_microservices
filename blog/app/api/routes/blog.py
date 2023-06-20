@@ -1,19 +1,20 @@
-from fastapi import APIRouter, Depends, Body, Query
+from fastapi import APIRouter, Depends, Body, Query, Path
 
 from uuid import UUID
 
-from depends import get_blog_repository, get_current_time
+from api.depends import get_blog_repository, get_current_time
+from api.schemas import Post, PostIn, PostUpdate, PostOut, CommentIn, CommentOut
+
 from repositories import BlogRepository
 from pydantic import EmailStr
-from schemas import Post, PostIn, PostUpdate, PostOut, CommentIn, CommentOut
 import exceptions as exc
 
 
 blog_router = APIRouter()
 
 
-@blog_router.get('/all')
-async def get_all_posts(
+@blog_router.get('/post')
+async def get_post_list(
     limit:int = Query(default=50, ge=1),
     repo:BlogRepository = Depends(get_blog_repository)
     ) -> list[Post]:
@@ -21,9 +22,9 @@ async def get_all_posts(
     return posts
 
 
-@blog_router.get('/post', response_model=Post, status_code=200)
+@blog_router.get('/post/{post_id}', response_model=Post, status_code=200)
 async def get_post(
-    post_id:UUID = Query(),
+    post_id:UUID = Path(),
     repo:BlogRepository = Depends(get_blog_repository)
     ) -> Post:
     post = await repo.get_post(post_id)

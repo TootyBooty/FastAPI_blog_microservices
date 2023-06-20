@@ -5,11 +5,18 @@ from permissions import check_permissions, PermissionDenied
 
 from api.depends import get_aiohttp_session, get_user_data_from_token, get_target_user_by_id
 from api.schemas.user import UserShow, UserOut, UserUpdate, UserCreate, UserRole, UserUpdateRole
-from api.urls import user_base_url, user_all_url, user_role_url
+from api.urls import user_base_url, user_all_url, user_role_url, user_ping_url
 
 
 
 user_router = APIRouter()
+
+
+@user_router.get('/ping')
+async def ping_user(
+    session = Depends(get_aiohttp_session)
+    ):
+    return await make_request(session=session, url=user_ping_url, method='get')
 
 
 @user_router.get("/all", response_model=list[UserShow])

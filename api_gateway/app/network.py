@@ -24,6 +24,6 @@ async def make_request(
             request = getattr(session, method)
             async with request(url, json=data, params=params, headers=headers) as response:
                 data = await response.json()
-                if response.status > 299:
+                if response.status > 399:
                     raise HTTPException(status_code=response.status, detail=data)
                 return data
