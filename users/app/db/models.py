@@ -1,13 +1,16 @@
 import enum
+from datetime import datetime
 from typing import Optional
 from uuid import UUID
 
 from pydantic import EmailStr
 from sqlmodel import ARRAY
 from sqlmodel import Column
+from sqlmodel import DateTime
 from sqlmodel import Enum
 from sqlmodel import Field
 from sqlmodel import SQLModel
+from utils import get_current_time
 
 
 class UserRole(str, enum.Enum):
@@ -39,6 +42,12 @@ class User(SQLModel, table=True):
     is_active: bool = Field(default=True)
     roles: set[UserRole] = Field(
         sa_column=Column(ARRAY(Enum(UserRole))), default={UserRole.ROLE_USER}
+    )
+    created_at: datetime = Field(default=get_current_time())
+    updated_at: datetime = Field(
+        default=get_current_time(),
+        sa_column=Column(DateTime, onupdate=get_current_time),
+        nullable=False,
     )
 
     @property

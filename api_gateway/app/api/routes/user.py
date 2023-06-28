@@ -9,6 +9,7 @@ from api.schemas.user import UserUpdate
 from api.schemas.user import UserUpdateRole
 from api.urls import user_all_url
 from api.urls import user_base_url
+from api.urls import user_ping_url
 from api.urls import user_role_url
 from fastapi import APIRouter
 from fastapi import Body
@@ -20,6 +21,11 @@ from permissions import PermissionDenied
 
 
 user_router = APIRouter()
+
+
+@user_router.get("/ping")
+async def ping_user(session=Depends(get_aiohttp_session)):
+    return await make_request(session=session, url=user_ping_url, method="get")
 
 
 @user_router.get("/all", response_model=list[UserShow])

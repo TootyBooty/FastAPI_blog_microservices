@@ -13,13 +13,16 @@ FROM python:3.11
 
 WORKDIR /blog/app
 
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONBUFFERED 1
+
 COPY --from=requirements-stage /tmp/requirements.txt /blog/requirements.txt
 
 RUN pip install --no-cache-dir --upgrade -r /blog/requirements.txt
 
 RUN apt-get update && apt-get -y dist-upgrade
 
-RUN apt install -y netcat
+RUN apt install -y netcat-traditional
 
 COPY ./entrypoint.sh /blog/app/entrypoint.sh
 

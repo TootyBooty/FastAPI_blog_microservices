@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 from typing import Optional
 
 from db.models import UserRole
@@ -74,6 +75,8 @@ class UserShow(CustomModel):
     email: EmailStr
     is_active: bool
     roles: set[UserRole]
+    created_at: datetime
+    updated_at: datetime
 
 
 class UserOut(CustomModel):

@@ -10,12 +10,13 @@ from api.schemas.blog import PostIn
 from api.schemas.blog import PostOut
 from api.schemas.blog import PostUpdate
 from api.schemas.user import UserRole
-from api.urls import blog_all_posts_url
 from api.urls import blog_comment_url
+from api.urls import blog_ping_url
 from api.urls import blog_post_url
 from fastapi import APIRouter
 from fastapi import Body
 from fastapi import Depends
+from fastapi import Path
 from fastapi import Query
 from network import make_request
 from permissions import check_permissions
@@ -24,22 +25,24 @@ from permissions import PermissionDenied
 blog_router = APIRouter()
 
 
-@blog_router.get("/all", response_model=list[Post])
-async def get_all_posts(
+@blog_router.get("/ping")
+async def ping_blog(session=Depends(get_aiohttp_session)):
+    return await make_request(session=session, url=blog_ping_url, method="get")
+
+
+@blog_router.get("/post", response_model=list[Post])
+async def get_post_list(
     limit: int = Query(ge=1, default=50), session=Depends(get_aiohttp_session)
 ):
     return await make_request(
-        session=session, url=blog_all_posts_url, method="get", params={"limit": limit}
+        session=session, url=blog_post_url, method="get", params={"limit": limit}
     )
 
 
-@blog_router.get("/post/", response_model=Post, status_code=200)
-async def get_post(post_id: UUID = Query(), session=Depends(get_aiohttp_session)):
+@blog_router.get("/post/{post_id}", response_model=Post, status_code=200)
+async def get_post(post_id: UUID = Path(), session=Depends(get_aiohttp_session)):
     return await make_request(
-        session=session,
-        url=blog_post_url,
-        method="get",
-        params={"post_id": post_id.hex},
+        session=session, url=f"{blog_post_url}/{post_id.hex}", method="get"
     )
 
 

@@ -1,13 +1,8 @@
 from typing import Union
 
+from api.schemas import *
 from motor.motor_asyncio import AsyncIOMotorCollection
 from pymongo import ReturnDocument
-from schemas import Comment
-from schemas import CommentIn
-from schemas import CommentOut
-from schemas import Post
-from schemas import PostIn
-from schemas import PostOut
 from uuid6 import uuid6
 
 

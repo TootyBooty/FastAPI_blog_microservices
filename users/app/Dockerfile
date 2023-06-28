@@ -22,7 +22,7 @@ RUN pip install --no-cache-dir --upgrade -r /users/requirements.txt
 
 RUN apt-get update && apt-get -y dist-upgrade
 
-RUN apt install -y netcat
+RUN apt install -y netcat-traditional
 
 COPY ./entrypoint.sh /users/app/entrypoint.sh
 
