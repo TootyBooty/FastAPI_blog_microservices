@@ -13,6 +13,9 @@ FROM python:3.11
 
 WORKDIR /blog/app
 
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONBUFFERED 1
+
 COPY --from=requirements-stage /tmp/requirements.txt /blog/requirements.txt
 
 RUN pip install --no-cache-dir --upgrade -r /blog/requirements.txt

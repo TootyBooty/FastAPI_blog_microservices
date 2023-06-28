@@ -1,4 +1,5 @@
 import enum
+from datetime import datetime
 from typing import Optional
 from uuid import UUID
 
@@ -55,6 +56,8 @@ class UserShow(CustomModel):
     email: EmailStr
     is_active: bool
     roles: list[UserRole]
+    created_at: datetime
+    updated_at: datetime
 
 
 class UserOut(CustomModel):

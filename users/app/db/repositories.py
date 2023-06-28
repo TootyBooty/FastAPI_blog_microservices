@@ -44,6 +44,8 @@ class UserRepository(BaseRepository):
                 email=new_user.email,
                 is_active=new_user.is_active,
                 roles=new_user.roles,
+                updated_at=new_user.updated_at,
+                created_at=new_user.created_at,
             )
 
     async def get_user_by_id(self, user_id: UUID) -> Union[User, None]:

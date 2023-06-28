@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     GATEWAY_TIMEOUT: int = 10
 
     API_GATEWAY_TOKEN: str
-    SECRET_KEY: str = "secret_key"
+    SECRET_KEY: str
 
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
