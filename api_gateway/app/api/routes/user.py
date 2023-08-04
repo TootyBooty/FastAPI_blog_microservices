@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from api.depends import get_aiohttp_session
 from api.depends import get_target_user_by_id
 from api.depends import get_user_data_from_token
@@ -7,13 +9,14 @@ from api.schemas.user import UserRole
 from api.schemas.user import UserShow
 from api.schemas.user import UserUpdate
 from api.schemas.user import UserUpdateRole
-from api.urls import user_all_url
 from api.urls import user_base_url
+from api.urls import user_list_url
 from api.urls import user_ping_url
 from api.urls import user_role_url
 from fastapi import APIRouter
 from fastapi import Body
 from fastapi import Depends
+from fastapi import Path
 from fastapi import Query
 from network import make_request
 from permissions import check_permissions
@@ -28,26 +31,25 @@ async def ping_user(session=Depends(get_aiohttp_session)):
     return await make_request(session=session, url=user_ping_url, method="get")
 
 
-@user_router.get("/all", response_model=list[UserShow])
-async def get_all_users(
+@user_router.get("/", response_model=list[UserShow])
+async def get_user_list(
     limit: int = Query(ge=1, default=50),
     offset: int = Query(ge=0, default=0),
     session=Depends(get_aiohttp_session),
 ):
     return await make_request(
         session=session,
-        url=user_all_url,
+        url=user_list_url,
         method="get",
         params={"limit": limit, "offset": offset},
     )
 
 
-@user_router.get("/", response_model=UserShow)
-async def get_user_by_id(
-    current_user=Depends(get_user_data_from_token),
-    target_user=Depends(get_target_user_by_id),
-):
-    return target_user
+@user_router.get("/{user_id}/", response_model=UserShow)
+async def get_user_by_id(user_id: UUID = Path(), session=Depends(get_aiohttp_session)):
+    return await make_request(
+        session=session, url=f"{user_base_url}{user_id}/", method="get"
+    )
 
 
 @user_router.post("/", response_model=UserShow)

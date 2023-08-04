@@ -9,6 +9,7 @@ from db.repositories import UserRepository
 from fastapi import APIRouter
 from fastapi import Body
 from fastapi import Depends
+from fastapi import Path
 from fastapi import Query
 from pydantic import EmailStr
 from sqlalchemy.exc import IntegrityError
@@ -18,8 +19,8 @@ from uuid6 import UUID
 user_router = APIRouter()
 
 
-@user_router.get("/all", response_model=list[UserShow])
-async def get_all_users(
+@user_router.get("/", response_model=list[UserShow])
+async def get_user_list(
     repo: UserRepository = Depends(get_user_repository),
     limit: int = Query(ge=1, default=50),
     offset: int = Query(ge=0, default=0),
@@ -28,9 +29,9 @@ async def get_all_users(
     return [UserShow(**user.dict()) for user in users]
 
 
-@user_router.get("/", response_model=UserShow)
+@user_router.get("/{user_id}/", response_model=UserShow)
 async def get_user_by_id(
-    user_id: UUID = Query(), repo: UserRepository = Depends(get_user_repository)
+    user_id: UUID = Path(), repo: UserRepository = Depends(get_user_repository)
 ):
     user = await repo.get_user_by_id(user_id)
     if user is None:

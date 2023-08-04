@@ -1,4 +1,5 @@
 up-prod:
+	docker network inspect blog >/dev/null 2>&1 && docker network rm blog || true && \
 	docker network create --driver=bridge --subnet=172.20.0.0/16 blog && \
 	docker compose -f users/docker-compose-prod.yml up -d && \
 	docker compose -f blog/docker-compose-prod.yml up -d && \
